@@ -1,15 +1,14 @@
 from django.shortcuts import render
 from .forms import VehiculoForm
-from django.contrib import messages
-from django.views import generic
 from .forms import UserRegisterForm
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.models import Permission
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.contenttypes.models import ContentType
 from .models import Vehiculo
-from django.contrib.auth import login
 from django.http import HttpResponseRedirect
+from django.contrib.auth.views import LoginView, LogoutView
 
 def index(request):
     return render(request, 'vehiculo/index.html')
@@ -45,7 +44,10 @@ def registro(request):
                 codename = 'visualizar_catalogo',
                 content_type = content_type
             )
-            user = form.save()
+            user = form.save(commit=False)
+            password = form.cleaned_data.get('password1')
+            user.set_password(password)
+            user.save()
             user.user_permissions.add(ver_contenido)
             login(request, user)
             messages.success(request, 'Registrado satisfactoriamente')
@@ -59,34 +61,21 @@ def registro(request):
     ctx = {'form' : form}
     return render(request, 'registration/registro.html', ctx)
 
-def login_view(request):
-    url_inicio = reverse_lazy('index')
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Sesión iniciada como: {username}')
-                return HttpResponseRedirect(url_inicio)
-            else:
-                messages.error(request, 'Error en usuario o contraseña')
-                form = AuthenticationForm(request, data=request.POST)
-                ctx = {
-                    'form' : form
-                }
-                return render(request, 'registration/login.html', ctx)
-        else:
-            messages.error(request, 'Ingreso inválido, algunos datos ingresados no son correctos')
-            form = UserRegisterForm(request.POST)
-            ctx = {
-                'form' : form
-            }
-            return render(request, 'registration/login.html', ctx)
-    form = AuthenticationForm()
-    ctx = {
-        'form' : form
-    }
-    return render(request, 'registration/login.html', ctx)
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        messages.success(self.request, f'Sesión iniciada como: {form.cleaned_data.get("username")}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Error en usuario o contraseña')
+        return super().form_invalid(form)
+
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy('index')
+
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, "Se ha cerrado la sesión satisfactoriamente.")
+        return super().dispatch(request, *args, **kwargs)
