@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+User._meta.get_field('email')._unique = True
 
 class Vehiculo(models.Model):
     modelos = (
@@ -21,3 +24,12 @@ class Vehiculo(models.Model):
     precio = models.IntegerField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        permissions = (
+            ('visualizar_catalogo', 'Puede visualizar'),
+        )
+
+    def __str__(self):
+        return self.marca + " " + self.modelo + " serial carrocería: " + self.serial_carroceria
+    
