@@ -34,6 +34,13 @@ def agregar_vehiculo(request):
         }
         return render(request, 'vehiculo/agregar.html', ctx)
 
+def listar_vehiculos(request):
+    lista_vehiculos = Vehiculo.objects.all()
+    ctx = {
+        'vehiculos' : lista_vehiculos
+    }
+    return render(request, 'vehiculo/listar.html', ctx)
+
 def registro(request):
     url_inicio = reverse_lazy('index')
     if request.method == 'POST':
