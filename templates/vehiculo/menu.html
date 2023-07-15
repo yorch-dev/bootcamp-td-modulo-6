@@ -7,27 +7,28 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" {% if request.resolver_match.url_name == 'index' %}aria-current="page"{% endif %} href="{% url 'index' %}">Inicio</a>
           </li>
           {% if perms.vehiculo.add_vehiculo %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'agregar_vehiculo' %}">Agregar</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'agregar_vehiculo' %}active{% endif %}" {% if request.resolver_match.url_name == 'agregar_vehiculo' %}aria-current="page"{% endif %} href="{% url 'agregar_vehiculo' %}">Agregar</a>
             </li>
           {% endif %}
           {% if perms.vehiculo.visualizar_catalogo %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'listar_vehiculos' %}">Listar</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}" {% if request.resolver_match.url_name == 'listar_vehiculos' %}aria-current="page"{% endif %} href="{% url 'listar_vehiculos' %}">Listar</a>
             </li>
           {% endif %}
         </ul>
-        {% if user.is_authenticated %}
-          <h3 class="text-white m-auto">Sesión iniciada como: {{ user.username }} </h3>
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        <ul class="navbar-nav ms-auto">
+          {% if user.is_authenticated %}
+            <li><a class="nav-link" href="{% url 'logout' %}">Salir</a></li>
+            <li><span class="nav-link text-white">Hola, {{ user.username }}</span></li>
           {% else %}
-          <h3 class="text-white m-auto">Sesión no iniciada </h3>
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
-          <a class="nav-link" href="{% url 'registro_usuario' %}">Registrarse</a>
-        {% endif %}
+            <li><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            <li><a class="nav-link" href="{% url 'registro_usuario' %}">Registrarse</a></li>
+          {% endif %}
+        </ul>
       </div>
     </div>
   </nav>
