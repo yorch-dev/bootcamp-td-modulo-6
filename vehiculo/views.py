@@ -9,10 +9,12 @@ from django.contrib.contenttypes.models import ContentType
 from .models import Vehiculo
 from django.http import HttpResponseRedirect
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.decorators import login_required, permission_required
 
 def index(request):
     return render(request, 'vehiculo/index.html')
 
+@permission_required(perm='vehiculo.add_vehiculo', raise_exception=True)
 def agregar_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
@@ -34,6 +36,7 @@ def agregar_vehiculo(request):
         }
         return render(request, 'vehiculo/agregar.html', ctx)
 
+@login_required
 def listar_vehiculos(request):
     lista_vehiculos = Vehiculo.objects.all()
     ctx = {

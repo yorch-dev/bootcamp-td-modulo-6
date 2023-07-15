@@ -9,12 +9,16 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'agregar_vehiculo' %}">Agregar</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'listar_vehiculos' %}">Listar</a>
-          </li>
+          {% if perms.vehiculo.add_vehiculo %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'agregar_vehiculo' %}">Agregar</a>
+            </li>
+          {% endif %}
+          {% if perms.vehiculo.visualizar_catalogo %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'listar_vehiculos' %}">Listar</a>
+            </li>
+          {% endif %}
         </ul>
         {% if user.is_authenticated %}
           <h3 class="text-white m-auto">Sesión iniciada como: {{ user.username }} </h3>
