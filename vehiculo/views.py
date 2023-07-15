@@ -5,11 +5,12 @@ from django.views import generic
 from .forms import UserRegisterForm
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.contenttypes.models import ContentType
 from .models import Vehiculo
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
-# Create your views here.
+
 def index(request):
     return render(request, 'vehiculo/index.html')
 
@@ -57,3 +58,35 @@ def registro(request):
     form = UserRegisterForm()
     ctx = {'form' : form}
     return render(request, 'registration/registro.html', ctx)
+
+def login_view(request):
+    url_inicio = reverse_lazy('index')
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Sesión iniciada como: {username}')
+                return HttpResponseRedirect(url_inicio)
+            else:
+                messages.error(request, 'Error en usuario o contraseña')
+                form = AuthenticationForm(request, data=request.POST)
+                ctx = {
+                    'form' : form
+                }
+                return render(request, 'registration/login.html', ctx)
+        else:
+            messages.error(request, 'Ingreso inválido, algunos datos ingresados no son correctos')
+            form = UserRegisterForm(request.POST)
+            ctx = {
+                'form' : form
+            }
+            return render(request, 'registration/login.html', ctx)
+    form = AuthenticationForm()
+    ctx = {
+        'form' : form
+    }
+    return render(request, 'registration/login.html', ctx)

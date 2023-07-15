@@ -16,6 +16,14 @@
             <a class="nav-link" href="#">Listar</a>
           </li>
         </ul>
+        {% if user.is_authenticated %}
+          <h3 class="text-white m-auto">Sesión iniciada como: {{ user.username }} </h3>
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          {% else %}
+          <h3 class="text-white m-auto">Sesión no iniciada </h3>
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          <a class="nav-link" href="{% url 'registro_usuario' %}">Registrarse</a>
+        {% endif %}
       </div>
     </div>
   </nav>

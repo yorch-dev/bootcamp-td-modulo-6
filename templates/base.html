@@ -1,0 +1,32 @@
+{% comment %} Bootstrap y crispy_forms {% endcomment %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    {% comment %} Bloque de links {% endcomment %}
+    {% block links %}{% endblock links %}
+
+    <title>
+        {% block title %}{% endblock title %}
+    </title>
+</head>
+<body>
+    
+    {% include 'vehiculo/menu.html' %}
+    {% block body %}{% endblock body %}
+    
+    
+    {% comment %} Bloque de scripts {% endcomment %}
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>
