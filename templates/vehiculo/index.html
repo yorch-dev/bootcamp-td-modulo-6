@@ -1,3 +1,9 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +13,9 @@
 </head>
 <body>
 
-    <h1>Catálogo de Vehículos</h1>
+    {% include 'vehiculo/menu.html' %}
+
+    <h1 class="text-center">Catálogo de Vehículos</h1>
     
 </body>
 </html>

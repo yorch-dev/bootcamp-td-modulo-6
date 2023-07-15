@@ -12,6 +12,8 @@
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     {% load crispy_forms_tags %}
+
+    {% include 'vehiculo/menu.html' %}
     
     <form action="" method="POST">
         {% csrf_token %}
